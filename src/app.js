@@ -9,33 +9,36 @@ import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
 import { firebase } from './firebase/firebase';
 import LoadingPage from './components/LoadingPage';
+import httpService from './services/httpService';
 
 const store = configureStore();
-const jsx = (
-  <Provider store={store}>
-    <AppRouter />
-  </Provider>
-);
-let hasRendered = false;
-const renderApp = () => {
-  if (!hasRendered) {
-    ReactDOM.render(jsx, document.getElementById('app'));
-    hasRendered = true;
-  }
-};
+console.log("Store: ",store.getState());
 
-ReactDOM.render(<LoadingPage />, document.getElementById('app'));
+  const jsx = (
+    <Provider store={store}>
+      <AppRouter />
+    </Provider>
+  );
+  let hasRendered = false;
+  const renderApp = () => {
+    if (!hasRendered) {
+      ReactDOM.render(jsx, document.getElementById('app'));
+      hasRendered = true;
+    }
+  };
 
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    store.dispatch(login(user.uid));
+  ReactDOM.render(<LoadingPage />, document.getElementById('app'));
+
+  const access_token = localStorage.getItem('access_token');
+  if (access_token) {
     renderApp();
     if (history.location.pathname === '/') {
       history.push('/dashboard');
     }
   } else {
+    console.log(httpService)
     store.dispatch(logout());
     renderApp();
-    history.push('/');
+    history.push('/signin');
   }
-});
+

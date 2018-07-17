@@ -9,19 +9,12 @@ export const PrivateRoute = ({
   ...rest
 }) => (
     <Route {...rest} component={(props) => (
-      isAuthenticated ? (
-        <div>
-          <Header />
-          <Component {...props} />
-        </div>
-      ) : (
-          <Redirect to="/" />
-        )
+      <Component {...props} />
     )} />
   );
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.uid
+  isAuthenticated: !!state.auth.access_token
 });
 
 export default connect(mapStateToProps)(PrivateRoute);
